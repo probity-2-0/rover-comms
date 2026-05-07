@@ -1,0 +1,16 @@
+# PlatformIO generated folders
+.pio
+.pioenvs
+.piolibdeps
+
+# IDE settings
+.vscode/*.json
+.idea
+
+# Compiled firmware binaries
+*.bin
+*.elf
+*.hex
+
+# Local configuration/secrets
+*.ini.local
