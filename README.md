@@ -130,8 +130,6 @@ The project uses:
 * Layered services
 * Dependency inversion
 
-Deep inheritance hierarchies are intentionally avoided.
-
 ---
 
 # High-Level Software Layers
@@ -180,144 +178,6 @@ Deep inheritance hierarchies are intentionally avoided.
 | Timers                                         |
 +------------------------------------------------+
 ```
-
----
-
-
-
-# Packet Structure
-
-The protocol uses compact fixed-size binary packets.
-
-```text
-+------------+------------+------------+------------+
-| Target ID  | Sender ID  | Command    | Data A     |
-+------------+------------+------------+------------+
-| Data B     | Msg ID     | CRC16                  |
-+------------+------------+-------------------------+
-```
-
----
-
-# Packet Definition
-
-```cpp
-struct Packet
-{
-    uint8_t targetId;
-    uint8_t senderId;
-    uint8_t command;
-    uint8_t dataA;
-    uint8_t dataB;
-    uint8_t msgId;
-    uint16_t crc;
-};
-```
-
----
-
-# Reliability Features
-
-The communication layer includes:
-
-* CRC16 validation
-* ACK packets
-* retry logic
-* heartbeat monitoring
-* message IDs
-* duplicate detection
-
----
-
-# Rover State Machine
-
-```text
-             +---------+
-             | INIT    |
-             +----+----+
-                  |
-                  v
-          +-------+-------+
-          | READY         |
-          +-------+-------+
-                  |
-                  v
-          +-------+-------+
-          | ACTIVE        |
-          +-------+-------+
-                  |
-             signal loss
-                  |
-                  v
-          +-------+-------+
-          | FAILSAFE      |
-          +-------+-------+
-```
-
----
-
-# Communication State Machine
-
-```text
-            +-------------+
-            | WAIT RX     |
-            +------+------+
-                   |
-            packet received
-                   |
-                   v
-            +------+------+
-            | VALIDATE    |
-            +------+------+
-                   |
-                   v
-            +------+------+
-            | PROCESS     |
-            +------+------+
-                   |
-                   v
-            +------+------+
-            | SEND ACK    |
-            +------+------+
-                   |
-                   v
-               WAIT RX
-```
-
----
-
-# Telemetry Flow
-
-```text
-Sensors
-   ↓
-TelemetryService
-   ↓
-PacketEncoder
-   ↓
-TX Queue
-   ↓
-LoRa Driver
-   ↓
-Wireless Link
-```
-
----
-
-# RX Flow
-
-```text
-UART ISR
-   ↓
-RingBuffer
-   ↓
-PacketDecoder
-   ↓
-MessageDispatcher
-   ↓
-CommandProcessor
-```
-
 ---
 
 # Communication Rules
@@ -356,24 +216,6 @@ Responsibilities:
 
 ---
 
-# AUX Pin Handling
-
-The AUX pin is critical.
-
-## AUX HIGH
-
-```text
-Module Ready
-```
-
-## AUX LOW
-
-```text
-Module Busy
-```
-
-Firmware must never transmit while AUX is LOW.
----
 
 # Future Enhancements
 
@@ -390,16 +232,5 @@ Potential future additions:
 * autonomous modes
 
 ---
-
-# Design Principles
-
-The architecture prioritizes:
-
-* simplicity
-* modularity
-* determinism
-* testability
-* debuggability
-* reliability
 * queue-based communication
 * robust testing
