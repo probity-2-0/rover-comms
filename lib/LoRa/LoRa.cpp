@@ -21,7 +21,7 @@ void LoRa::update()
 {
     uart.update();
 }
-void LoRa::available()
+bool LoRa::available()
 {
     return uart.available();
 }
@@ -33,5 +33,5 @@ void LoRa::send(const uint8_t *data, size_t len)
 {
     while (!ready())
         ;
-    uart.write(data, len)
+    uart.write(data, len);
 }
