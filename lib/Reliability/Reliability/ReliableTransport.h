@@ -21,6 +21,10 @@ public:
 
     void send(Packet &packet);
 
+    void sendAck(uint8_t senderId, uint8_t targetId, uint8_t ackedMsgId);
+
+    void handleAck(const Packet &packet);
+
     void process();
 
     void handleAck(uint8_t msgId);

@@ -2,6 +2,7 @@
 #include "ReliableTransport.h"
 
 #include "ReliableConfig.hpp"
+#include "AckHelper.h"
 
 ReliableTransport::ReliableTransport(
     LoRa &loraRef)
@@ -83,4 +84,22 @@ void ReliableTransport::handleAck(
 bool ReliableTransport::busy() const
 {
     return pending.awaitingAck;
+}
+
+void ReliableTransport::handleAck(const Packet &packet)
+{
+    // packet.dataA is expected to contain the acked message id
+    handleAck(packet.dataA);
+}
+
+void ReliableTransport::sendAck(uint8_t senderId, uint8_t targetId, uint8_t ackedMsgId)
+{
+    Packet ack = AckHelper::create(senderId, targetId, ackedMsgId);
+
+    // ACKs are control packets and should not themselves be tracked for ACK
+    uint8_t buf[9];
+
+    PacketEncode::encode(ack, buf);
+
+    lora.send(buf, 9);
 }

@@ -12,7 +12,7 @@ private:
 public:
     UART(HardwareSerial &port);
 
-    void begin(uint_32 baud);
+    void begin(uint32_t baud);
 
     void update();
 
@@ -20,7 +20,7 @@ public:
 
     bool read(uint8_t &byte);
 
-    bool write(uint8_t byte);
+    void write(uint8_t byte);
 
     void write(const uint8_t *data, size_t len);
-}
+};

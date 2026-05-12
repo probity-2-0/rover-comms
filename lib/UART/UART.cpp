@@ -32,5 +32,5 @@ void UART::write(uint8_t byte)
 }
 void UART::write(const uint8_t *data, size_t len)
 {
-    serial.wite(data, len);
+    serial.write(data, len);
 }
