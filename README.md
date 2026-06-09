@@ -46,21 +46,6 @@ The system is designed for:
                    +-------------------+
 ```
 
----
-
-# Communication Goals
-
-The system supports:
-
-* Rover telemetry
-* Remote control commands
-* Logging
-* Heartbeat monitoring
-* ACK/retry reliability
-* Failsafe triggering
-
----
-
 # Hardware Stack
 
 ## MCU
@@ -120,117 +105,11 @@ The STM32 behaves as a high-level serial controller instead of directly managing
 ---
 
 # Software Architecture
-
-The project uses:
-
-* Composition-first design
-* Interface-driven architecture
-* State machines
-* Queue-based communication
-* Layered services
-* Dependency inversion
-
----
-
-# High-Level Software Layers
-
-```text
-+------------------------------------------------+
-|                APPLICATION LAYER               |
-|------------------------------------------------|
-| RoverController                                |
-| GroundStationController                        |
-| MissionManager                                 |
-| FailSafeManager                                |
-+------------------------------------------------+
-
-+------------------------------------------------+
-|                 SERVICE LAYER                  |
-|------------------------------------------------|
-| TelemetryService                               |
-| CommandService                                 |
-| LoggingService                                 |
-| HeartbeatService                               |
-+------------------------------------------------+
-
-+------------------------------------------------+
-|                PROTOCOL LAYER                  |
-|------------------------------------------------|
-| PacketEncoder                                  |
-| PacketDecoder                                  |
-| CRC16                                          |
-| Dispatcher                                     |
-+------------------------------------------------+
-
-+------------------------------------------------+
-|                TRANSPORT LAYER                 |
-|------------------------------------------------|
-| LoRaDriver                                     |
-| UARTDriver                                     |
-+------------------------------------------------+
-
-+------------------------------------------------+
-|                HARDWARE LAYER                  |
-|------------------------------------------------|
-| Motors                                         |
-| Sensors                                        |
-| GPIO                                           |
-| Timers                                         |
-+------------------------------------------------+
-```
----
-
-# Communication Rules
-
-## Ground Station
-
-Acts as:
-
-```text
-MASTER NODE
-```
-
-Responsibilities:
-
-* send commands
-* receive telemetry
-* monitor heartbeat
-* display logs
-
----
-
-## Rover
-
-Acts as:
-
-```text
-SLAVE NODE
-```
-
-Responsibilities:
-
-* execute commands
-* send telemetry
-* send ACKs
-* trigger failsafe
-
----
-
-
-# Future Enhancements
-
-Potential future additions:
-
-* DMA UART
-* FreeRTOS
-* encryption
-* OTA updates
-* adaptive telemetry
-* packet prioritization
-* persistent configuration
-* GPS waypoint navigation
-* autonomous modes
-
----
-* queue-based communication
-* robust testing
+| Module        | Responsibility             |
+| ------------- | -------------------------- |
+| communication | Send/receive packets       |
+| api           | Shared data structures     |
+| ground        | Ground station behavior    |
+| rover         | Rover behavior             |
+| state         | RX/TX/SLEEP state tracking |
+| main          | Task creation and startup  |

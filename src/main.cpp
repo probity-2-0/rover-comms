@@ -1,46 +1,60 @@
-#include <Arduino.h>
+#include "FreeRTOS.h"
+#include "task.h"
 
-#include "../lib/UART/UART.hpp"
+#include "../communication/protocol.h"
 
-#include "../lib/LoRa/LoRa.hpp"
+extern void vCommunicationTask(
+    void *pvParameters);
 
-#include "../lib/Reliability/Reliability/ReliableTransport.h"
+#ifdef BUILD_GROUND
 
-#include "../lib/Applications/RoverSide/rover.h"
-#include "../lib/Applications/GroundSide/ground.h"
-
-#define BUILD_ROVER
-
-UART uart(Serial1);
-
-LoRa lora(uart, PB0);
-
-ReliableTransport reliable(lora);
-
-#ifdef BUILD_ROVER
-
-RoverApplication app(
-    lora,
-    reliable);
+extern void vGroundTask(
+    void *pvParameters);
 
 #else
 
-GroundApplication app(
-    lora,
-    reliable);
+extern void vRoverTask(
+    void *pvParameters);
 
 #endif
 
-void setup()
+int main(void)
 {
-    Serial.begin(115200);
+    vCommunicationInit();
 
-    lora.begin(9600);
+    xTaskCreate(
+        vCommunicationTask,
+        "COMM",
+        256,
+        NULL,
+        2,
+        NULL);
 
-    app.setup();
-}
+#ifdef BUILD_GROUND
 
-void loop()
-{
-    app.update();
+    xTaskCreate(
+        vGroundTask,
+        "GROUND",
+        256,
+        NULL,
+        1,
+        NULL);
+
+#else
+
+    xTaskCreate(
+        vRoverTask,
+        "ROVER",
+        256,
+        NULL,
+        1,
+        NULL);
+
+#endif
+
+    vTaskStartScheduler();
+
+    while (1)
+    {
+    }
 }
