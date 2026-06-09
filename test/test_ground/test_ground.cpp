@@ -2,7 +2,7 @@
 
 #include <unity.h>
 
-#include "../ground/ground.c"
+#include "../ground/ground.cpp"
 
 /******************************************************************************
  * Mock Communication

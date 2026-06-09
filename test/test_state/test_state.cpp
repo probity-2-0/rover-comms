@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <unity.h>
 
 #include "../state/rover_state.c"

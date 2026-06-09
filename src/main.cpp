@@ -2,6 +2,7 @@
 #include "task.h"
 
 #include "../communication/protocol.h"
+#include "../state/rover_state.c"
 
 extern void vCommunicationTask(
     void *pvParameters);
@@ -32,6 +33,8 @@ int main(void)
 
 #ifdef BUILD_GROUND
 
+    vStateSet(STATE_RX);
+
     xTaskCreate(
         vGroundTask,
         "GROUND",
@@ -41,6 +44,8 @@ int main(void)
         NULL);
 
 #else
+
+    vStateSet(STATE_RX);
 
     xTaskCreate(
         vRoverTask,

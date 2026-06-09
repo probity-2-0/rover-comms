@@ -3,88 +3,50 @@
 /******************************************************************************
  * State Definitions
  ******************************************************************************/
-
 typedef enum
 {
-    STATE_RX = 0,
+    STATE_RX,
     STATE_PROCESS,
     STATE_TX,
     STATE_SLEEP
-
 } State_t;
 
 /******************************************************************************
  * Current State
  ******************************************************************************/
-
-static State_t xCurrentState =
-    STATE_RX;
+static State_t xCurrentState = STATE_RX;
 
 /******************************************************************************
  * Set State
  ******************************************************************************/
-
-void vStateSet(
-    State_t xState)
-{
-    xCurrentState = xState;
-}
+void vStateSet(State_t xState) { xCurrentState = xState; }
 
 /******************************************************************************
  * Get State
  ******************************************************************************/
-
-State_t xStateGet(void)
-{
-    return xCurrentState;
-}
+State_t xStateGet(void) { return xCurrentState; }
 
 /******************************************************************************
  * Packet Received Event
  ******************************************************************************/
-
-void vStatePacketReceived(void)
-{
-    xCurrentState =
-        STATE_PROCESS;
-}
+void vStatePacketReceived(void) { xCurrentState = STATE_PROCESS; }
 
 /******************************************************************************
  * Packet Processed Event
  ******************************************************************************/
-
-void vStatePacketProcessed(void)
-{
-    xCurrentState =
-        STATE_TX;
-}
+void vStatePacketProcessed(void) { xCurrentState = STATE_TX; }
 
 /******************************************************************************
  * Packet Sent Event
  ******************************************************************************/
-
-void vStatePacketSent(void)
-{
-    xCurrentState =
-        STATE_RX;
-}
+void vStatePacketSent(void) { xCurrentState = STATE_RX; }
 
 /******************************************************************************
  * Idle Event
  ******************************************************************************/
-
-void vStateIdle(void)
-{
-    xCurrentState =
-        STATE_SLEEP;
-}
+void vStateIdle(void) { xCurrentState = STATE_SLEEP; }
 
 /******************************************************************************
  * Wake Event
  ******************************************************************************/
-
-void vStateWake(void)
-{
-    xCurrentState =
-        STATE_RX;
-}
+void vStateWake(void) { xCurrentState = STATE_RX; }

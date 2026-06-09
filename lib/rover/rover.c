@@ -5,6 +5,7 @@
 
 #include "../communication/protocol.h"
 #include "../api/api.h"
+#include "../state/rover_state.c"
 
 /******************************************************************************
  * Rover Data
@@ -12,6 +13,7 @@
 
 static MotorCommand_t xMotorCommand;
 static Telemetry_t xTelemetry;
+static uint32_t ulTelemetrySendCounter = 0;
 
 /******************************************************************************
  * Process Motor Command
@@ -24,6 +26,8 @@ void vRoverProcessMotorCommand(
         &xMotorCommand,
         pxPacket->ucPayload,
         sizeof(MotorCommand_t));
+
+    vStatePacketReceived();
 }
 
 /******************************************************************************
@@ -61,6 +65,9 @@ void vRoverSendTelemetry(void)
 
     xCommunicationSend(
         &xPacket);
+
+    vStatePacketProcessed();
+    vStatePacketSent();
 }
 
 /******************************************************************************
@@ -74,6 +81,8 @@ void vRoverTask(
 
     (void)pvParameters;
 
+    vTelemetryInit(&xTelemetry);
+
     for (;;)
     {
         if (xCommunicationReceive(
@@ -83,7 +92,20 @@ void vRoverTask(
             {
                 vRoverProcessMotorCommand(
                     &xPacket);
+
+                vStatePacketProcessed();
             }
+        }
+
+        ulTelemetrySendCounter++;
+        if (ulTelemetrySendCounter >= 10)
+        {
+            xTelemetry.sLeftMotor = xMotorCommand.sLeftSpeed;
+            xTelemetry.sRightMotor = xMotorCommand.sRightSpeed;
+
+            vRoverSendTelemetry();
+            ulTelemetrySendCounter = 0;
+            vStatePacketReceived();
         }
 
         vTaskDelay(

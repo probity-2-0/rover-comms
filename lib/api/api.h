@@ -1,7 +1,16 @@
-#ifndef API_H
-#define API_H
-
 #include <stdint.h>
+
+/******************************************************************************
+ * Input Command
+ ******************************************************************************/
+
+typedef struct
+{
+    uint8_t ucW;
+    uint8_t ucA;
+    uint8_t ucS;
+    uint8_t ucD;
+} InputCommand_t;
 
 /******************************************************************************
  * Motor Command
@@ -61,5 +70,3 @@ static inline void vTelemetryInit(
     pxTelemetry->xSensor.sAccelY = 0;
     pxTelemetry->xSensor.sAccelZ = 0;
 }
-
-#endif
