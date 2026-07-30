@@ -73,8 +73,8 @@ void vTaskSender(void *pvParameters) {
     tx_message_t txData;
     txData.id = 1;
 
-    bool btnState = pdFALSE;
-    bool lastButtonState = pdTRUE;
+    bool btnState = false;
+    bool lastButtonState = true;
     
     TickType_t xLastWakeTime = xTaskGetTickCount();
     const TickType_t xFrequency = pdMS_TO_TICKS(50); // Continuous 50ms stream
@@ -112,7 +112,7 @@ void vTaskSender(void *pvParameters) {
 
         txData.joyX = invertedX;
         txData.joyY = invertedY; 
-        txData.btnState = rawSW;
+        txData.btnState = btnState;
         txData.intensity = ledBrightness;
 
         esp_now_send(macB, (uint8_t *)&txData, sizeof(tx_message_t));
