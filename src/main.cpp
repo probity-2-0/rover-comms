@@ -6,7 +6,7 @@
 // --- Pin Configurations ---
 #define PIN_VRX 34  // X-Axis Analog Input
 #define PIN_VRY 35  // Y-Axis Analog Input
-#define PIN_SW  27  // Pushbutton Switch (Requires Pull-up)
+#define PIN_SW  13  // Pushbutton Switch (Requires Pull-up)
 #define PIN_LED 2   // Onboard / External Feedback LED (PWM output)
 
 // --- PWM Configurations ---
@@ -72,6 +72,9 @@ void OnDataRecv(const uint8_t *mac, const uint8_t *incomingDataBytes, int len) {
 void vTaskSender(void *pvParameters) {
     tx_message_t txData;
     txData.id = 1;
+
+    bool btnState = pdFALSE;
+    bool lastButtonState = pdTRUE;
     
     TickType_t xLastWakeTime = xTaskGetTickCount();
     const TickType_t xFrequency = pdMS_TO_TICKS(50); // Continuous 50ms stream
@@ -79,8 +82,14 @@ void vTaskSender(void *pvParameters) {
     for (;;) {
         int rawX = analogRead(PIN_VRX);
         int rawY = analogRead(PIN_VRY);
-        bool rawSW = !digitalRead(PIN_SW);
+        bool rawSW = digitalRead(PIN_SW);
 
+        if ( rawSW == LOW && lastButtonState == HIGH){
+            btnState = !btnState;
+            vTaskDelay(pdMS_TO_TICKS(200));
+        }
+        lastButtonState = rawSW;
+        
         // Invert axes to correct physical steering and driving mapping profiles
         int invertedY = 4095 - rawY; 
         int invertedX = 4095 - rawX; 
